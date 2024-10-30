@@ -42,7 +42,7 @@ services:
       - "9411:9411"
     depends_on:
     - els
-    container_name: jaeger-collector
+    container_name: jaeger-collector:1.6
     hostname: jaeger-collector
     restart: unless-stopped
     networks: 
@@ -50,7 +50,7 @@ services:
         ipv4_address: 172.20.0.4
     command: ["/go/bin/collector-linux", "--span-storage.type=elasticsearch", "--es.server-urls=http://172.20.0.2:9200"]
   jaeger-agent:
-    image: jaegertracing/jaeger-agent:latest
+    image: jaegertracing/jaeger-agent:1.6
     ports:
       - "5775:5775/udp"
       - "5778:5778"
@@ -68,7 +68,7 @@ services:
     command: ["/go/bin/agent-linux", "--collector.host-port=jaeger-collector:14267"]
 
   jaeger-query:
-    image: jaegertracing/jaeger-query:latest
+    image: jaegertracing/jaeger-query:1.6
     ports:
       - 16686:16686
     depends_on:
