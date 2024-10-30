@@ -35,14 +35,14 @@ services:
       elastic-jaeger:
         ipv4_address: 172.20.0.3
   jaeger-collector:
-    image: jaegertracing/jaeger-collector:latest
+    image: jaegertracing/jaeger-collector:1.6
     ports:
       - "14267:14267"
       - "14268:14268"
       - "9411:9411"
     depends_on:
     - els
-    container_name: jaeger-collector:1.6
+    container_name: jaeger-collector
     hostname: jaeger-collector
     restart: unless-stopped
     networks: 
