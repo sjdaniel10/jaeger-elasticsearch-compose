@@ -3,6 +3,7 @@ version: "3"
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    container_name: elasticsearch
     networks: 
       elastic-jaeger:
         ipv4_address: 172.20.0.2
@@ -22,6 +23,7 @@ services:
 
   jaeger-collector:
     image: jaegertracing/jaeger-collector
+    container_name: jaeger-collector
     ports:
       - "14269:14269"
       - "14268:14268"
@@ -46,6 +48,7 @@ services:
   jaeger-agent:
     image: jaegertracing/jaeger-agent
     hostname: jaeger-agent
+    container_name: jaeger-agent
     command: ["--reporter.grpc.host-port=jaeger-collector:14250"]
     ports:
       - "5775:5775/udp"
@@ -63,6 +66,7 @@ services:
 
   jaeger-query:
     image: jaegertracing/jaeger-query
+    container_name: jaeger-query
     environment:
       - SPAN_STORAGE_TYPE=elasticsearch
       - no_proxy=localhost
