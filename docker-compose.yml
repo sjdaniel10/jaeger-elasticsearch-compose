@@ -19,8 +19,8 @@ services:
         hard: -1
     mem_limit: 1g
     volumes:
-      - esdata1:/usr/share/elasticsearch/data
-      - eslog:/usr/share/elasticsearch/logs
+      - ./esdata1:/usr/share/elasticsearch/data
+      - ./eslog:/usr/share/elasticsearch/logs
       - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
   kibana:
     image: docker.elastic.co/kibana/kibana:6.0.0
@@ -76,11 +76,6 @@ services:
     networks:
     - elastic-jaeger
     command: ["/go/bin/query-linux", "--span-storage.type=elasticsearch", "--es.server-urls=http://els:9200", "--es.sniffer=false", "--query.static-files=/go/jaeger-ui/", "--log-level=debug"]
-volumes:
-  esdata1:
-    driver: local
-  eslog:
-    driver: local
 networks:
   elastic-jaeger:
     driver: bridge
