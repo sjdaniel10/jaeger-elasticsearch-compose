@@ -6,8 +6,9 @@ services:
     restart: always
     container_name: els
     hostname: els
-    networks:
-    - elastic-jaeger
+    networks: 
+      elastic-jaeger:
+        ipv4_address: 172.20.0.2
     environment:
       - bootstrap.memory_lock=true
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
@@ -27,11 +28,12 @@ services:
     ports:
       - "5601:5601"
     environment:
-      ELASTICSEARCH_URL: http://els:9200
+      ELASTICSEARCH_URL: http://172.20.0.2:9200
     depends_on:
     - els
-    networks:
-    - elastic-jaeger
+    networks: 
+      elastic-jaeger:
+        ipv4_address: 172.20.0.3
   jaeger-collector:
     image: jaegertracing/jaeger-collector:latest
     ports:
@@ -43,9 +45,10 @@ services:
     container_name: jaeger-collector
     hostname: jaeger-collector
     restart: unless-stopped
-    networks:
-    - elastic-jaeger
-    command: ["/go/bin/collector-linux", "--span-storage.type=elasticsearch", "--es.server-urls=http://els:9200"]
+    networks: 
+      elastic-jaeger:
+        ipv4_address: 172.20.0.4
+    command: ["/go/bin/collector-linux", "--span-storage.type=elasticsearch", "--es.server-urls=http://172.20.0.2:9200"]
   jaeger-agent:
     image: jaegertracing/jaeger-agent:latest
     ports:
@@ -59,8 +62,9 @@ services:
     restart: unless-stopped
     container_name: jaeger-agent
     hostname: jaeger-agent
-    networks:
-    - elastic-jaeger
+    networks: 
+      elastic-jaeger:
+        ipv4_address: 172.20.0.5
     command: ["/go/bin/agent-linux", "--collector.host-port=jaeger-collector:14267"]
 
   jaeger-query:
@@ -73,9 +77,17 @@ services:
     restart: unless-stopped
     container_name: jaeger-query
     hostname: jaeger-query
-    networks:
-    - elastic-jaeger
-    command: ["/go/bin/query-linux", "--span-storage.type=elasticsearch", "--es.server-urls=http://els:9200", "--es.sniffer=false", "--query.static-files=/go/jaeger-ui/", "--log-level=debug"]
-networks:
+    networks: 
+      elastic-jaeger:
+        ipv4_address: 172.20.0.6
+    command: ["/go/bin/query-linux", "--span-storage.type=elasticsearch", "--es.server-urls=http://172.20.0.2:9200", "--es.sniffer=false", "--query.static-files=/go/jaeger-ui/", "--log-level=debug"]
+networks: 
   elastic-jaeger:
     driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam: 
+      driver: default
+      config: 
+       - subnet: 172.20.0.0/24
+         gateway: 172.20.0.1
