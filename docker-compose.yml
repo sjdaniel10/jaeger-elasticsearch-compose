@@ -94,6 +94,9 @@ services:
     #   - ./kib_config/kibana.yml:/usr/share/kibana/config/kibana.yml
     environment:
       - ELASTICSEARCH_HOSTS='["http://172.20.0.2:9200"]'
+    networks: 
+      elastic-jaeger:
+        ipv4_address: 172.20.0.6
     restart: unless-stopped
 networks: 
   elastic-jaeger:
