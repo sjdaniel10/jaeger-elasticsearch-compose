@@ -19,8 +19,8 @@ services:
       - ES_JAVA_OPTS=-Xms5120m -Xmx5120m
       - xpack.security.enabled=false
     volumes:
-      - ./esdata:/usr/share/elasticsearch/data
-      - ./eslogs:/logs
+      - /data/elasticsearch/data:/usr/share/elasticsearch/data
+      - /data/elasticsearch/logs:/logs
 
   jaeger-collector:
     image: jaegertracing/jaeger-collector:1.62.0
